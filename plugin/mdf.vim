@@ -9,7 +9,7 @@ endfunction
 
 " Check if specified line is a header, i.e starts with #
 function! IsLineHeader(lnum)
-        return getline(a:lnum) =~ '^#' && !IsInPreBlock(a:lnum)
+        return getline(a:lnum) =~ '^\s*#' && !IsInPreBlock(a:lnum)
 endfunction
 
 " Check if the line is inside a Pre block. 
@@ -58,7 +58,9 @@ function! GetHeaderLevel(lnum)
         let h = 0
         if IsLineHeader(a:lnum)
                  for ch in split(getline(a:lnum), '\zs')
-                         if (ch == '#')
+                         if (ch =~ '\s' && h == 0)
+                                 continue
+                         elseif (ch == '#')
                                  let h += 1
                          else
                                  break
